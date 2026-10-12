@@ -1,0 +1,125 @@
+{
+  "info": {
+    "name": "productosVal - API de productos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. GET todos los productos (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/productos" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));"
+      ] } }]
+    },
+    {
+      "name": "2. POST crear producto valido (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Producto de prueba\",\n  \"price\": 10.5,\n  \"stock\": 3\n}" },
+        "url": "{{baseUrl}}/productos"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 201', () => pm.response.to.have.status(201));",
+        "pm.collectionVariables.set('id', pm.response.json().id);"
+      ] } }]
+    },
+    {
+      "name": "3. GET producto por id (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/productos/{{id}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));"
+      ] } }]
+    },
+    {
+      "name": "4. PUT actualizar producto (200)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Producto editado\",\n  \"price\": 20.0,\n  \"stock\": 7\n}" },
+        "url": "{{baseUrl}}/productos/{{id}}"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));"
+      ] } }]
+    },
+    {
+      "name": "5. PUT id que no existe (404)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"X\",\n  \"price\": 1,\n  \"stock\": 1\n}" },
+        "url": "{{baseUrl}}/productos/9999"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 404', () => pm.response.to.have.status(404));"
+      ] } }]
+    },
+    {
+      "name": "6. POST sin nombre (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"\",\n  \"price\": 10.5,\n  \"stock\": 3\n}" },
+        "url": "{{baseUrl}}/productos"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 400', () => pm.response.to.have.status(400));"
+      ] } }]
+    },
+    {
+      "name": "7. POST precio negativo (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"X\",\n  \"price\": -5,\n  \"stock\": 3\n}" },
+        "url": "{{baseUrl}}/productos"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 400', () => pm.response.to.have.status(400));"
+      ] } }]
+    },
+    {
+      "name": "8. POST sin precio (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"X\",\n  \"stock\": 3\n}" },
+        "url": "{{baseUrl}}/productos"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 400', () => pm.response.to.have.status(400));"
+      ] } }]
+    },
+    {
+      "name": "9. POST stock negativo (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"X\",\n  \"price\": 5,\n  \"stock\": -1\n}" },
+        "url": "{{baseUrl}}/productos"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 400', () => pm.response.to.have.status(400));"
+      ] } }]
+    },
+    {
+      "name": "10. DELETE producto de prueba (204)",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/productos/{{id}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 204', () => pm.response.to.have.status(204));"
+      ] } }]
+    },
+    {
+      "name": "11. GET producto ya borrado (404)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/productos/{{id}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 404', () => pm.response.to.have.status(404));"
+      ] } }]
+    }
+  ]
+}
